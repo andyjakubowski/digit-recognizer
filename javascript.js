@@ -1,6 +1,7 @@
 function handleDOMContentLoaded() {
   const canvas = document.getElementsByTagName('canvas').item(0);
-  const context = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d');
+  const clearButton = document.getElementById('button-clear');
   let isPainting = false;
 
   function startPosition(e) {
@@ -10,7 +11,7 @@ function handleDOMContentLoaded() {
 
   function finishedPosition() {
     isPainting = false;
-    context.beginPath();
+    ctx.beginPath();
   }
 
   function draw(e) {
@@ -19,22 +20,28 @@ function handleDOMContentLoaded() {
     }
 
     // Get coordinates translated to canvas-local coordinates
-    context.lineTo(e.clientX, e.clientY);
-    context.stroke();
-    context.beginPath();
-    context.moveTo(e.clientX, e.clientY);
+    ctx.lineTo(e.clientX, e.clientY);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(e.clientX, e.clientY);
   }
 
-  context.lineWidth = 10;
-  context.lineCap = 'round';
-  context.strokeStyle = 'black';
+  function handleClearClick() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  ctx.lineWidth = 10;
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = 'black';
 
   canvas.addEventListener('mousedown', startPosition);
   canvas.addEventListener('mouseup', finishedPosition);
   canvas.addEventListener('mousemove', draw);
+
+  clearButton.addEventListener('click', handleClearClick);
 }
 
-function addCanvasEventListeners(canvas, context) {
+function addCanvasEventListeners(canvas, ctx) {
   canvas.addEventListener('mousedown', handleMouseDown);
 }
 
