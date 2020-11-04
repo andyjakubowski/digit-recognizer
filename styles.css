@@ -18,6 +18,12 @@ button {
   display: block;
 }
 
+img {
+  margin: 1em;
+
+  display: inline-block;
+}
+
 /* Positioning */
 /* Display */
 /* Colors */

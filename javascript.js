@@ -2,7 +2,14 @@ function handleDOMContentLoaded() {
   const canvas = document.getElementsByTagName('canvas').item(0);
   const ctx = canvas.getContext('2d');
   const clearButton = document.getElementById('button-clear');
+  const saveButton = document.getElementById('button-save');
   let isPainting = false;
+
+  function resetCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
 
   function startPosition(e) {
     isPainting = true;
@@ -27,9 +34,16 @@ function handleDOMContentLoaded() {
   }
 
   function handleClearClick() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    resetCanvas();
   }
 
+  function handleSaveClick() {
+    const image = new Image(canvas.width, canvas.height);
+    image.src = canvas.toDataURL();
+    document.body.append(image);
+  }
+
+  resetCanvas();
   ctx.lineWidth = 10;
   ctx.lineCap = 'round';
   ctx.strokeStyle = 'black';
@@ -39,6 +53,7 @@ function handleDOMContentLoaded() {
   canvas.addEventListener('mousemove', draw);
 
   clearButton.addEventListener('click', handleClearClick);
+  saveButton.addEventListener('click', handleSaveClick);
 }
 
 function addCanvasEventListeners(canvas, ctx) {
