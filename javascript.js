@@ -1,7 +1,15 @@
 function handleDOMContentLoaded() {
   const canvas = document.getElementsByTagName('canvas').item(0);
-  const context = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d');
+  const clearButton = document.getElementById('button-clear');
+  const saveButton = document.getElementById('button-save');
   let isPainting = false;
+
+  function resetCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
 
   function startPosition(e) {
     isPainting = true;
@@ -10,7 +18,7 @@ function handleDOMContentLoaded() {
 
   function finishedPosition() {
     isPainting = false;
-    context.beginPath();
+    ctx.beginPath();
   }
 
   function draw(e) {
@@ -19,22 +27,36 @@ function handleDOMContentLoaded() {
     }
 
     // Get coordinates translated to canvas-local coordinates
-    context.lineTo(e.clientX, e.clientY);
-    context.stroke();
-    context.beginPath();
-    context.moveTo(e.clientX, e.clientY);
+    ctx.lineTo(e.clientX, e.clientY);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(e.clientX, e.clientY);
   }
 
-  context.lineWidth = 10;
-  context.lineCap = 'round';
-  context.strokeStyle = 'black';
+  function handleClearClick() {
+    resetCanvas();
+  }
+
+  function handleSaveClick() {
+    const image = new Image(canvas.width, canvas.height);
+    image.src = canvas.toDataURL();
+    document.body.append(image);
+  }
+
+  resetCanvas();
+  ctx.lineWidth = 10;
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = 'black';
 
   canvas.addEventListener('mousedown', startPosition);
   canvas.addEventListener('mouseup', finishedPosition);
   canvas.addEventListener('mousemove', draw);
+
+  clearButton.addEventListener('click', handleClearClick);
+  saveButton.addEventListener('click', handleSaveClick);
 }
 
-function addCanvasEventListeners(canvas, context) {
+function addCanvasEventListeners(canvas, ctx) {
   canvas.addEventListener('mousedown', handleMouseDown);
 }
 
