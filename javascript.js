@@ -54,6 +54,22 @@ function handleDOMContentLoaded() {
 
   clearButton.addEventListener('click', handleClearClick);
   saveButton.addEventListener('click', handleSaveClick);
+
+  // create a session
+  const myOnnxSession = new onnx.InferenceSession();
+  myOnnxSession.loadModel('./rf_mnist.onnx');
+  // load the ONNX model file
+  // myOnnxSession.loadModel('./rf_mnist.onnx').then(() => {
+  //   console.log('model loaded');
+  // // generate model input
+  // const inferenceInputs = getInputs();
+  // // execute the model
+  // myOnnxSession.run(inferenceInputs).then((output) => {
+  //   // consume the output
+  //   const outputTensor = output.values().next().value;
+  //   console.log(`model output tensor: ${outputTensor.data}.`);
+  // });
+  // });
 }
 
 function addCanvasEventListeners(canvas, ctx) {
