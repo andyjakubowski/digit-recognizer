@@ -1,18 +1,20 @@
 let globalCanvas = undefined;
 let globalContext = undefined;
-let globalTensor = undefined;
 let globalSession = undefined;
+let answerText = undefined;
+
+let drawCounter = 0;
 
 function handleDOMContentLoaded() {
   const canvas = document.getElementsByTagName('canvas').item(0);
   const ctx = canvas.getContext('2d');
   const clearButton = document.getElementById('button-clear');
-  const guessButton = document.getElementById('button-guess');
-  const saveButton = document.getElementById('button-save');
+  // const saveButton = document.getElementById('button-save');
   let isPainting = false;
 
   globalCanvas = canvas;
   globalContext = ctx;
+  answerText = document.getElementById('answer-text');
 
   function resetCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -38,6 +40,8 @@ function handleDOMContentLoaded() {
       return;
     }
 
+    drawCounter += 1;
+
     const [x, y] = getCoordinates(e);
 
     // Get coordinates translated to canvas-local coordinates
@@ -45,6 +49,8 @@ function handleDOMContentLoaded() {
     ctx.stroke();
     ctx.beginPath();
     ctx.moveTo(x, y);
+
+    makeInference();
   }
 
   function getCoordinates(e) {
@@ -69,38 +75,38 @@ function handleDOMContentLoaded() {
     resetCanvas();
   }
 
-  function handleSaveClick() {
-    const image = new Image(canvas.width, canvas.height);
-    image.src = canvas.toDataURL();
-    document.body.append(image);
+  // function handleSaveClick() {
+  //   const image = new Image(canvas.width, canvas.height);
+  //   image.src = canvas.toDataURL();
+  //   document.body.append(image);
+  // }
+
+  function softmax(arr) {
+    const C = Math.max(...arr);
+    const d = arr.map((y) => Math.exp(y - C)).reduce((a, b) => a + b);
+    return arr.map((value, index) => {
+      return Math.exp(value - C) / d;
+    });
   }
 
-  function handleGuessClick() {
-    const answerText = document.getElementById('answer-text');
+  function makeInference() {
     const input = preprocess(globalContext);
-    console.log('Input tensor:', input);
-    globalTensor = input;
     const inputs = [input];
+    let result;
+
     globalSession.run(inputs).then((output) => {
       const data = output.get('Plus214_Output_0')['data'];
       const probabilities = softmax(data);
       const highestProbability = Math.max(...probabilities);
       const maxIndex = probabilities.indexOf(highestProbability);
       answerText.textContent = String(maxIndex);
-      console.log(`highestProbability: ${maxIndex}`);
     });
 
-    function softmax(arr) {
-      const C = Math.max(...arr);
-      const d = arr.map((y) => Math.exp(y - C)).reduce((a, b) => a + b);
-      return arr.map((value, index) => {
-        return Math.exp(value - C) / d;
-      });
-    }
+    return result;
   }
 
   resetCanvas();
-  ctx.lineWidth = 20;
+  ctx.lineWidth = 25;
   ctx.lineCap = 'round';
   ctx.strokeStyle = 'black';
 
@@ -114,8 +120,7 @@ function handleDOMContentLoaded() {
   canvas.addEventListener('touchmove', draw);
 
   clearButton.addEventListener('click', handleClearClick);
-  saveButton.addEventListener('click', handleSaveClick);
-  guessButton.addEventListener('click', handleGuessClick);
+  // saveButton.addEventListener('click', handleSaveClick);
 
   // create a session
   const session = new onnx.InferenceSession();
@@ -123,15 +128,15 @@ function handleDOMContentLoaded() {
   session
     .loadModel('./mnist/model.onnx')
     .then(() => {
-      console.log('model loaded');
+      // console.log('model loaded');
       // const array = [...Array(784).keys()];
-      const inputTensor = new Tensor(imageArray, 'float32', [1, 1, 28, 28]);
-      const inputs = [inputTensor];
-      return session.run(inputs);
+      // const inputTensor = new Tensor(imageArray, 'float32', [1, 1, 28, 28]);
+      // const inputs = [inputTensor];
+      // return session.run(inputs);
     })
     .then((output) => {
-      const data = output.get('Plus214_Output_0')['data'];
-      console.log(`Likelihood: ${data}`);
+      // const data = output.get('Plus214_Output_0')['data'];
+      // console.log(`Likelihood: ${data}`);
     });
   // load the ONNX model file
   // myOnnxSession.loadModel('./rf_mnist.onnx').then(() => {
