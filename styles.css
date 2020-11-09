@@ -1,6 +1,7 @@
 body {
   margin: 0;
-  /* padding: 0.5em; */
+  /* padding: 5em; */
+  /* padding-top: 100em; */
 
   background-color: seashell;
 }
@@ -8,14 +9,16 @@ body {
 canvas {
   background-color: white;
   border: 1px solid black;
+
+  touch-action: none;
 }
 
 button {
   margin: 1em;
   width: 200px;
   height: 48px;
-
-  display: block;
+  /* 
+  display: block; */
 }
 
 img {

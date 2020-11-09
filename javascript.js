@@ -31,15 +31,38 @@ function handleDOMContentLoaded() {
   }
 
   function draw(e) {
+    // Prevent scrolling on touch devices while drawing
+    e.preventDefault();
+
     if (!isPainting) {
       return;
     }
 
+    const [x, y] = getCoordinates(e);
+
     // Get coordinates translated to canvas-local coordinates
-    ctx.lineTo(e.clientX, e.clientY);
+    ctx.lineTo(x, y);
     ctx.stroke();
     ctx.beginPath();
-    ctx.moveTo(e.clientX, e.clientY);
+    ctx.moveTo(x, y);
+  }
+
+  function getCoordinates(e) {
+    const { left, top } = event.target.getBoundingClientRect();
+    let { clientX, clientY } = e;
+
+    // for touch event
+    if (e.touches && e.touches.length) {
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    }
+
+    const leftRelativeToDocument = window.scrollX + left;
+    const topRelativeToDocument = window.scrollY + top;
+
+    const x = clientX - leftRelativeToDocument;
+    const y = clientY - topRelativeToDocument;
+    return [x, y];
   }
 
   function handleClearClick() {
@@ -50,14 +73,6 @@ function handleDOMContentLoaded() {
     const image = new Image(canvas.width, canvas.height);
     image.src = canvas.toDataURL();
     document.body.append(image);
-  }
-
-  function softmax(arr) {
-    const C = Math.max(...arr);
-    const d = arr.map((y) => Math.exp(y - C)).reduce((a, b) => a + b);
-    return arr.map((value, index) => {
-      return Math.exp(value - C) / d;
-    });
   }
 
   function handleGuessClick() {
@@ -74,16 +89,29 @@ function handleDOMContentLoaded() {
       answerText.textContent = String(maxIndex);
       console.log(`highestProbability: ${maxIndex}`);
     });
+
+    function softmax(arr) {
+      const C = Math.max(...arr);
+      const d = arr.map((y) => Math.exp(y - C)).reduce((a, b) => a + b);
+      return arr.map((value, index) => {
+        return Math.exp(value - C) / d;
+      });
+    }
   }
 
   resetCanvas();
-  ctx.lineWidth = 10;
+  ctx.lineWidth = 20;
   ctx.lineCap = 'round';
   ctx.strokeStyle = 'black';
 
   canvas.addEventListener('mousedown', startPosition);
   canvas.addEventListener('mouseup', finishedPosition);
+  canvas.addEventListener('mouseleave', finishedPosition);
   canvas.addEventListener('mousemove', draw);
+
+  canvas.addEventListener('touchstart', startPosition);
+  canvas.addEventListener('touchend', finishedPosition);
+  canvas.addEventListener('touchmove', draw);
 
   clearButton.addEventListener('click', handleClearClick);
   saveButton.addEventListener('click', handleSaveClick);
