@@ -1,9 +1,18 @@
+let globalCanvas = undefined;
+let globalContext = undefined;
+let globalTensor = undefined;
+let globalSession = undefined;
+
 function handleDOMContentLoaded() {
   const canvas = document.getElementsByTagName('canvas').item(0);
   const ctx = canvas.getContext('2d');
   const clearButton = document.getElementById('button-clear');
+  const guessButton = document.getElementById('button-guess');
   const saveButton = document.getElementById('button-save');
   let isPainting = false;
+
+  globalCanvas = canvas;
+  globalContext = ctx;
 
   function resetCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -43,6 +52,30 @@ function handleDOMContentLoaded() {
     document.body.append(image);
   }
 
+  function softmax(arr) {
+    const C = Math.max(...arr);
+    const d = arr.map((y) => Math.exp(y - C)).reduce((a, b) => a + b);
+    return arr.map((value, index) => {
+      return Math.exp(value - C) / d;
+    });
+  }
+
+  function handleGuessClick() {
+    const answerText = document.getElementById('answer-text');
+    const input = preprocess(globalContext);
+    console.log('Input tensor:', input);
+    globalTensor = input;
+    const inputs = [input];
+    globalSession.run(inputs).then((output) => {
+      const data = output.get('Plus214_Output_0')['data'];
+      const probabilities = softmax(data);
+      const highestProbability = Math.max(...probabilities);
+      const maxIndex = probabilities.indexOf(highestProbability);
+      answerText.textContent = String(maxIndex);
+      console.log(`highestProbability: ${maxIndex}`);
+    });
+  }
+
   resetCanvas();
   ctx.lineWidth = 10;
   ctx.lineCap = 'round';
@@ -54,9 +87,11 @@ function handleDOMContentLoaded() {
 
   clearButton.addEventListener('click', handleClearClick);
   saveButton.addEventListener('click', handleSaveClick);
+  guessButton.addEventListener('click', handleGuessClick);
 
   // create a session
   const session = new onnx.InferenceSession();
+  globalSession = session;
   session
     .loadModel('./mnist/model.onnx')
     .then(() => {
@@ -86,6 +121,107 @@ function handleDOMContentLoaded() {
 
 function addCanvasEventListeners(canvas, ctx) {
   canvas.addEventListener('mousedown', handleMouseDown);
+}
+
+function preprocess(ctx) {
+  // center crop
+  // const imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+  // const imageDataCenterCrop = centerCrop(imageData);
+  // const ctxCenterCrop = document
+  //   .getElementById('input-canvas-centercrop')
+  //   .getContext('2d');
+  // ctxCenterCrop.canvas.width = imageDataCenterCrop.width;
+  // ctxCenterCrop.canvas.height = imageDataCenterCrop.height;
+  // ctxCenterCrop.putImageData(imageDataCenterCrop, 0, 0);
+  // scaled to 28 x 28
+  const ctxScaled = document
+    .getElementById('input-canvas-scaled')
+    .getContext('2d');
+  ctxScaled.save();
+  ctxScaled.scale(28 / ctx.canvas.width, 28 / ctx.canvas.height);
+  ctxScaled.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  ctxScaled.drawImage(document.getElementById('input-canvas'), 0, 0);
+  const imageDataScaled = ctxScaled.getImageData(
+    0,
+    0,
+    ctxScaled.canvas.width,
+    ctxScaled.canvas.height
+  );
+  ctxScaled.restore();
+  // process image data for model input
+  const { data } = imageDataScaled;
+  const input = new Float32Array(784);
+  for (let i = 0, len = data.length; i < len; i += 4) {
+    // 0, represents black, 255 represents white
+    // We want 0 for white AKA background, and 1 for black AKA foreground
+    // data[i] represents the first channel, R, so Red
+    input[i / 4] = 1 - data[i] / 255;
+  }
+
+  const tensor = new Tensor(input, 'float32', [1, 1, 28, 28]);
+  return tensor;
+}
+
+function centerCrop(imageData) {
+  const { data, width, height } = imageData;
+  let [xmin, ymin] = [width, height];
+  let [xmax, ymax] = [-1, -1];
+  for (let i = 0; i < width; i++) {
+    for (let j = 0; j < height; j++) {
+      const idx = i + j * width;
+      if (data[4 * idx + 3] > 0) {
+        if (i < xmin) {
+          xmin = i;
+        }
+        if (i > xmax) {
+          xmax = i;
+        }
+        if (j < ymin) {
+          ymin = j;
+        }
+        if (j > ymax) {
+          ymax = j;
+        }
+      }
+    }
+  }
+
+  // add a little padding
+  xmin -= 20;
+  xmax += 20;
+  ymin -= 20;
+  ymax += 20;
+
+  // make bounding box square
+  let [widthNew, heightNew] = [xmax - xmin + 1, ymax - ymin + 1];
+  if (widthNew < heightNew) {
+    // new width < new height
+    const halfBefore = Math.floor((heightNew - widthNew) / 2);
+    const halfAfter = heightNew - widthNew - halfBefore;
+    xmax += halfAfter;
+    xmin -= halfBefore;
+  } else if (widthNew > heightNew) {
+    // new width > new height
+    const halfBefore = Math.floor((widthNew - heightNew) / 2);
+    const halfAfter = widthNew - heightNew - halfBefore;
+    ymax += halfAfter;
+    ymin -= halfBefore;
+  }
+
+  widthNew = xmax - xmin + 1;
+  heightNew = ymax - ymin + 1;
+  const dataNew = new Uint8ClampedArray(widthNew * heightNew * 4);
+  for (let i = xmin; i <= xmax; i++) {
+    for (let j = ymin; j <= ymax; j++) {
+      if (i >= 0 && i < width && j >= 0 && j < height) {
+        const idx = i + j * width;
+        const idxNew = i - xmin + (j - ymin) * widthNew;
+        dataNew[4 * idxNew + 3] = data[4 * idx + 3];
+      }
+    }
+  }
+
+  return new ImageData(dataNew, widthNew, heightNew);
 }
 
 const imageArray = [

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <title>Digit Recognizer</title>
-    <link href="styles.css" rel="stylesheet" />
+    <link href="./styles.css" rel="stylesheet" />
 
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
@@ -28,15 +28,17 @@
     <meta property="og:site_name" content="Digit Recognizer" />
     <meta property="twitter:card" content="summary_large_image" />
     <script src="https://cdn.jsdelivr.net/npm/onnxjs/dist/onnx.min.js"></script>
-    <script src="javascript.js"></script>
+    <script src="./javascript.js"></script>
   </head>
   <body>
-    <canvas width="300" height="300">A canvas onto which digits are to be drawn.</canvas>
+    <canvas id="input-canvas" width="300" height="300">A canvas onto which digits are to be drawn.</canvas>
+    <!-- <canvas id="input-canvas-centercrop" style="display: block;"></canvas> -->
+    <canvas id="input-canvas-scaled" width="28" height="28" style="display: none;"></canvas>
     <h1>How to use this thing</h1>
     <p>Draw a digit with your mouse or finger. Then, press Guess to find out which digit the machine learning model thinks you drew. Press Clear to wipe the canvas clean.</p>
-    <h2>Answer: waiting for your drawing</h2>
+    <h2>Answer: <span id="answer-text"></span></h2>
     <button id="button-clear">Clear</button>
-    <button>Guess</button>
+    <button id="button-guess">Guess</button>
     <button id="button-save">Save</button>
   </body>
 </html>
