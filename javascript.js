@@ -17,6 +17,16 @@ function handleDOMContentLoaded() {
   globalCanvas = canvas;
   globalContext = ctx;
 
+  function drawCanvasPlaceholder() {
+    const canvas = document.getElementsByTagName('canvas').item(0);
+    const ctx = canvas.getContext('2d');
+    const placeholderImage = new Image(280, 280);
+    placeholderImage.src = './images/canvas-placeholder.png';
+    ctx.drawImage(placeholderImage, 0, 0);
+  }
+
+  function removeCanvasPlaceholder() {}
+
   function resetCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = 'white';
@@ -109,6 +119,7 @@ function handleDOMContentLoaded() {
   }
 
   resetCanvas();
+  drawCanvasPlaceholder();
   ctx.lineWidth = 25;
   ctx.lineCap = 'round';
   ctx.strokeStyle = 'black';
