@@ -4,35 +4,152 @@
   font-display: swap;
 }
 
+/* RESET
+======================= */
+
+dl,
+dd,
+ul,
+blockquote,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+:root {
+  --color-yellow: #eedc60;
+  --color-orange: #ea5d39;
+  --color-black: #0b1316;
+  --color-gray: #f2f2f7;
+  --color-purplesky: #261a31;
+}
+
+html {
+  /* Mobile viewport bug fix to avoid scrolling */
+  /* from https://allthingssmitty.com/2020/05/11/css-fix-for-100vh-in-mobile-webkit/ */
+  min-height: -webkit-fill-available;
+}
+
 body {
   margin: 0;
-  /* padding: 5em; */
-  /* padding-top: 100em; */
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
 
-  background-color: seashell;
+  display: flex;
+  flex-direction: column;
+
+  background-color: var(--color-purplesky);
+  color: var(--color-orange);
 
   font-family: 'Graymalkin Condensed', sans-serif;
+  text-align: center;
+}
+
+a {
+  color: var(--color-orange);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+main {
+  flex-grow: 1;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.footer__link-list {
+  padding-bottom: 2em;
+
+  display: flex;
+  justify-content: center;
+}
+
+.footer__link:first-of-type {
+  margin-right: 1em;
+}
+
+.main-content {
+  padding: 1em 0;
+  max-width: 400px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1 {
+  margin-bottom: 0.75em;
+}
+
+h2 {
+  font-size: 1em;
+}
+
+#answer-text {
+  margin-bottom: 0.25em;
+  width: 100%;
+  height: 64px;
+
+  font-size: 3em;
 }
 
 canvas {
-  background-color: white;
+  margin-bottom: 1em;
   border: 1px solid black;
+
+  background-color: white;
 
   touch-action: none;
 }
 
-button {
-  margin: 1em;
-  width: 200px;
-  height: 48px;
-  /* 
-  display: block; */
+.button__container {
+  box-sizing: border-box;
+  border: 2px solid var(--color-orange);
+  border-radius: 4px;
+  padding: 3px;
+  height: 44px;
 }
 
-img {
-  margin: 1em;
+.button__container:hover {
+  cursor: pointer;
+}
 
-  display: inline-block;
+.button__label {
+  padding: 0 12px;
+  height: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: var(--color-orange);
+
+  color: var(--color-black);
+  font-size: 19.2px;
+  text-align: center;
+  text-decoration: none;
+
+  transition: background-color 0.08s;
+}
+
+.button__label:hover {
+  text-decoration: none;
 }
 
 /* Positioning */

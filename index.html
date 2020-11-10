@@ -38,13 +38,32 @@
     <script src="./javascript.js"></script>
   </head>
   <body>
-    <!-- <canvas id="input-canvas-centercrop" style="display: block;"></canvas> -->
-    <h1>Digit Recognizer</h1>
-    <!-- <p>Draw a digit with your mouse or finger. Then, press Guess to find out which digit the machine learning model thinks you drew. Press Clear to wipe the canvas clean.</p> -->
-    <h2>Prediction: <span id="answer-text"></span></h2>
-    <canvas id="input-canvas" width="300" height="300">A canvas onto which digits are to be drawn.</canvas>
-    <button id="button-clear">Trash it</button>
-    <!-- <button id="button-save">Save</button> -->
-    <canvas id="input-canvas-scaled" width="28" height="28" style="display: none;"></canvas>
+    <main>
+      <div class="main-content">
+        <!-- <canvas id="input-canvas-centercrop" style="display: block;"></canvas> -->
+        <h1>Digit Recognizer</h1>
+        <!-- <p>Draw a digit with your mouse or finger. Then, press Guess to find out which digit the machine learning model thinks you drew. Press Clear to wipe the canvas clean.</p> -->
+        <h2>Prediction:</h2>
+        <div id="answer-text">🤔</div>
+        <canvas id="input-canvas" width="280" height="280">A canvas onto which digits are to be drawn.</canvas>
+        <div
+        id="button-clear"
+                class="button__container"
+              >
+                <span
+                  class="button__label"
+                  >Trash it</span
+                >
+              </div>
+        <!-- <button id="button-save">Save</button> -->
+        <canvas id="input-canvas-scaled" width="28" height="28" style="display: none;"></canvas>
+      </div>
+    </main>
+    <footer class="footer">
+      <ul class="footer__link-list">
+        <li class="footer__link"><a href="https://github.com/andyjakubowski/digit-recognizer/">GitHub</a></li>
+        <li class="footer__link"><a href="https://twitter.com/jakubowskiandy">Twitter</a></li>
+      </ul>
+    </footer>
   </body>
 </html>
