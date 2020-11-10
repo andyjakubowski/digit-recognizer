@@ -1,9 +1,17 @@
+@font-face {
+  font-family: 'Graymalkin Condensed';
+  src: url('./fonts/graymalkincond.otf') format('opentype');
+  font-display: swap;
+}
+
 body {
   margin: 0;
   /* padding: 5em; */
   /* padding-top: 100em; */
 
   background-color: seashell;
+
+  font-family: 'Graymalkin Condensed', sans-serif;
 }
 
 canvas {
