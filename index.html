@@ -3,10 +3,16 @@
   <head>
     <meta charset="utf-8" />
     <title>Digit Recognizer</title>
-    <link href="styles.css" rel="stylesheet" />
+    <link
+      rel="preload"
+      href="./assets/fonts/graymalkincond.otf"
+      as="font"
+      type="font/otf"
+      crossorigin
+    />
+    <link href="./styles.css" rel="stylesheet" />
 
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
+    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
@@ -27,15 +33,43 @@
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Digit Recognizer" />
     <meta property="twitter:card" content="summary_large_image" />
-    <script src="javascript.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/onnxjs/dist/onnx.min.js"></script>
+    <script src="./javascript.js"></script>
   </head>
   <body>
-    <canvas width="300" height="300">A canvas onto which digits are to be drawn.</canvas>
-    <h1>How to use this thing</h1>
-    <p>Draw a digit with your mouse or finger. Then, press Guess to find out which digit the machine learning model thinks you drew. Press Clear to wipe the canvas clean.</p>
-    <h2>Answer: waiting for your drawing</h2>
-    <button id="button-clear">Clear</button>
-    <button>Guess</button>
-    <button id="button-save">Save</button>
+    <main>
+      <div class="main-content">
+        <h1>Digit Recognizer</h1>
+        <ul class="bars-container">
+          <li class="bar"><div class="bar__rect-container"><div class="bar__rect-fill" data-id="0"></div></div><div class="bar__label">0</div></li>
+          <li class="bar"><div class="bar__rect-container"><div class="bar__rect-fill" data-id="1"></div></div><div class="bar__label">1</div></li>
+          <li class="bar"><div class="bar__rect-container"><div class="bar__rect-fill" data-id="2"></div></div><div class="bar__label">2</div></li>
+          <li class="bar"><div class="bar__rect-container"><div class="bar__rect-fill" data-id="3"></div></div><div class="bar__label">3</div></li>
+          <li class="bar"><div class="bar__rect-container"><div class="bar__rect-fill" data-id="4"></div></div><div class="bar__label">4</div></li>
+          <li class="bar"><div class="bar__rect-container"><div class="bar__rect-fill" data-id="5"></div></div><div class="bar__label">5</div></li>
+          <li class="bar"><div class="bar__rect-container"><div class="bar__rect-fill" data-id="6"></div></div><div class="bar__label">6</div></li>
+          <li class="bar"><div class="bar__rect-container"><div class="bar__rect-fill" data-id="7"></div></div><div class="bar__label">7</div></li>
+          <li class="bar"><div class="bar__rect-container"><div class="bar__rect-fill" data-id="8"></div></div><div class="bar__label">8</div></li>
+          <li class="bar"><div class="bar__rect-container"><div class="bar__rect-fill" data-id="9"></div></div><div class="bar__label">9</div></li>
+        </ul>
+        <canvas id="input-canvas" width="280" height="280">A canvas onto which digits are to be drawn.</canvas>
+        <div
+        id="button-clear"
+                class="button__container"
+              >
+                <span
+                  class="button__label"
+                  >Trash it</span
+                >
+              </div>
+        <canvas id="input-canvas-scaled" width="28" height="28" style="display: none;"></canvas>
+      </div>
+    </main>
+    <footer class="footer">
+      <ul class="footer__link-list">
+        <li class="footer__link"><a href="https://github.com/andyjakubowski/digit-recognizer/">GitHub</a></li>
+        <li class="footer__link"><a href="https://twitter.com/jakubowskiandy">Twitter</a></li>
+      </ul>
+    </footer>
   </body>
 </html>
