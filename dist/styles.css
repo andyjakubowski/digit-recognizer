@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'Graymalkin Condensed';
-  src: url('./fonts/graymalkincond.otf') format('opentype');
+  src: url('./assets/fonts/graymalkincond.otf') format('opentype');
   font-display: swap;
 }
 

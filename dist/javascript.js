@@ -21,7 +21,7 @@ function handleDOMContentLoaded() {
     const canvas = document.getElementsByTagName('canvas').item(0);
     const ctx = canvas.getContext('2d');
     const placeholderImage = new Image(280, 280);
-    placeholderImage.src = './images/canvas-placeholder.png';
+    placeholderImage.src = './assets/images/canvas-placeholder.png';
     ctx.drawImage(placeholderImage, 0, 0);
   }
 
@@ -138,7 +138,7 @@ function handleDOMContentLoaded() {
   // create a session
   const session = new onnx.InferenceSession();
   globalSession = session;
-  session.loadModel('./mnist/model.onnx');
+  session.loadModel('./model.onnx');
 }
 
 function addCanvasEventListeners(canvas, ctx) {
