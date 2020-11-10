@@ -4,7 +4,7 @@
     "gh-pages": "^3.0.0"
   },
   "scripts": {
-    "start": "browser-sync start --server -w",
+    "start": "browser-sync 'dist' -w",
     "deploy": "gh-pages -d './dist'"
   }
 }
