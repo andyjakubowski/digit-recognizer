@@ -71,7 +71,7 @@ function handleDOMContentLoaded() {
   }
 
   function getCoordinates(e) {
-    const { left, top } = event.target.getBoundingClientRect();
+    const { left, top } = e.target.getBoundingClientRect();
     let { clientX, clientY } = e;
 
     // for touch event
@@ -80,11 +80,14 @@ function handleDOMContentLoaded() {
       clientY = e.touches[0].clientY;
     }
 
+    const pageX = window.scrollX + clientX;
+    const pageY = window.scrollY + clientY;
+
     const leftRelativeToDocument = window.scrollX + left;
     const topRelativeToDocument = window.scrollY + top;
 
-    const x = clientX - leftRelativeToDocument;
-    const y = clientY - topRelativeToDocument;
+    const x = pageX - leftRelativeToDocument;
+    const y = pageY - topRelativeToDocument;
     return [x, y];
   }
 
@@ -139,10 +142,6 @@ function handleDOMContentLoaded() {
   const session = new onnx.InferenceSession();
   globalSession = session;
   session.loadModel('./model.onnx');
-}
-
-function addCanvasEventListeners(canvas, ctx) {
-  canvas.addEventListener('mousedown', handleMouseDown);
 }
 
 function preprocess(ctx) {
