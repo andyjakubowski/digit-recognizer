@@ -17,6 +17,11 @@ function handleDOMContentLoaded() {
   globalCanvas = canvas;
   globalContext = ctx;
 
+  const setVh = function setVh() {
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  };
+
   function drawCanvasPlaceholder() {
     const canvas = document.getElementsByTagName('canvas').item(0);
     const ctx = canvas.getContext('2d');
@@ -137,6 +142,9 @@ function handleDOMContentLoaded() {
   canvas.addEventListener('touchmove', draw);
 
   clearButton.addEventListener('click', handleClearClick);
+
+  window.addEventListener('load', setVh);
+  window.addEventListener('resize', setVh);
 
   // create a session
   const session = new onnx.InferenceSession();
